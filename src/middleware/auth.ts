@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../utils/sendResponse";
 import { verifyToken } from "../utils/jwt";
-import { send } from "node:process";
 import { getUserById } from "../modules/auth/auth.service";
 import type { Role } from "../types";
 
@@ -20,6 +19,7 @@ export const  auth = async(req:Request,res:Response,next:NextFunction)=>{
         return sendResponse (res, {message:"User not found"},404)
      }
      req.user = user
+     console.log(req.user)
     next()
 }
 
