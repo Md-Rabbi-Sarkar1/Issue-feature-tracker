@@ -2,6 +2,7 @@ import type { Response } from "express";
 import { pool } from "../../db";
 import type { LUser, RUser, TUser } from "../../types";
 import bcrypt from 'bcrypt'
+
 export const createUser = async (user:RUser)=>{
     console.log(user)
     const {name, email, password, role} = user
@@ -24,3 +25,11 @@ export const createUser = async (user:RUser)=>{
         return isValid? user : null
     
     }
+
+    export const getUserById=async (id:string)=>{
+        const res = await pool.query(`
+            select * from users where id = $1
+            `,[id])
+        return res.rows[0] 
+    }
+    
