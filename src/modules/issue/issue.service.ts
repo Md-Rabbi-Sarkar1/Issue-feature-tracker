@@ -3,11 +3,11 @@ import type { TIssue, UIssue } from "../../types";
 import { pool } from "../../db";
 import { platform } from "node:os";
 
-export const createIssueIntoDB = async (issue:TIssue)=>{
+export const createIssueIntoDB = async (issue:TIssue,reporter_id:string)=>{
     const {title,description,type} = issue
     const res = await pool.query(`
-        insert into issues value($1,$2,$3)
-        returning title, description,type`,[title,description,type])
+        insert into issues (title,description,type,reporter_id) values ($1,$2,$3,$4)
+        returning id, title, description,type,status,reporter_id,created_at,updated_at`,[title,description,type,reporter_id])
         return res.rows[0]
 }
 
@@ -21,6 +21,7 @@ export const getIssueByIdFromDB =async(id:string)=>{
     const res = await pool.query(`
         select * from issues where id = $1
         `,[id])
+        console.log(res)
         return res.rows[0]
 }
 
@@ -35,5 +36,6 @@ export const deleteIssueFromDB = async (id:string)=>{
     const res = await pool.query(`
         delete from issues where id =$1
         `,[id])
+        console.log(res)
         return res.rows[0]
 }

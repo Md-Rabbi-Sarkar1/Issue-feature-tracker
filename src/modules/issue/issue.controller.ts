@@ -5,7 +5,8 @@ import { sendResponse } from "../../utils/sendResponse";
 
 export const createIssue = async (req: Request, res: Response) => {
     const issue = req.body
-    const result = await createIssueIntoDB(issue)
+    const reporter_id = req?.user.id
+    const result = await createIssueIntoDB(issue,reporter_id)
     if (!result) {
         return sendResponse(res, { message: "Issue not create" }, 400)
     }
@@ -34,7 +35,7 @@ export const updateIssue = async (req: Request, res: Response) => {
     if (!result) {
         return sendResponse(res, { message: "updated issue unsuccessfull" }, 401)
     }
-    return sendResponse(res, { message: "updated retrived successfull" }, 200)
+    return sendResponse(res, { message: "updated retrived successfull",data:result }, 200)
 }
 
 export const deleteIssue = async (req: Request, res: Response) => {

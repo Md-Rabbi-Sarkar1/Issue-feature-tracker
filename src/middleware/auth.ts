@@ -19,7 +19,7 @@ export const  auth = async(req:Request,res:Response,next:NextFunction)=>{
         return sendResponse (res, {message:"User not found"},404)
      }
      req.user = user
-     console.log(req.user)
+   //   console.log(req.user)
     next()
 }
 

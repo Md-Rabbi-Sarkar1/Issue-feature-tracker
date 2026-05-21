@@ -4,7 +4,7 @@ import type { LUser, RUser, TUser } from "../../types";
 import bcrypt from 'bcrypt'
 
 export const createUser = async (user:RUser)=>{
-    console.log(user)
+    // console.log(user)
     const {name, email, password, role} = user
     const hash = await bcrypt.hash(password,10)
     const res = await pool.query(`
