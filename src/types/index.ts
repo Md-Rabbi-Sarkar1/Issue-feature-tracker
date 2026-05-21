@@ -8,3 +8,8 @@ export type TUser ={
     updated_at: Date
 }
 export type RUser = Omit<TUser, "id"|"created_at"|"updated_at">
+export type SUser = Omit<TUser,"password">
+export type LUser ={
+    email:string,
+    password:string
+}

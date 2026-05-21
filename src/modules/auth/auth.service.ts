@@ -1,6 +1,6 @@
 import type { Response } from "express";
 import { pool } from "../../db";
-import type { RUser, TUser } from "../../types";
+import type { LUser, RUser, TUser } from "../../types";
 import bcrypt from 'bcrypt'
 export const createUser = async (user:RUser)=>{
     console.log(user)
@@ -8,6 +8,19 @@ export const createUser = async (user:RUser)=>{
     const hash = await bcrypt.hash(password,10)
     const res = await pool.query(`
         insert into users (name, email, password, role) values ($1,$2,$3,$4)
-        returning name, email, role`,[name,email,hash,role])
+        returning id, name, email, role, created_at, updated_at`,[name,email,hash,role])
         return res.rows[0] 
+    }
+    export const validateUser =async (email:string,pass:string)=>{
+        
+        const res = await pool.query(`
+            select * from users where email = $1
+            `,[email])
+                    if(!res.rows.length){
+            return null
+        }
+        const {password,...user} = res.rows[0] as TUser
+        const isValid = await bcrypt.compare(pass,password)
+        return isValid? user : null
+    
     }

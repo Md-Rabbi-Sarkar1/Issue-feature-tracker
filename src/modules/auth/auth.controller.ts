@@ -1,6 +1,7 @@
 import type { Request, Response } from "express"
-import { createUser } from "./auth.service"
+import { createUser, validateUser } from "./auth.service"
 import { sendResponse } from "../../utils/sendResponse"
+import { signToken } from "../../utils/jwt"
 
 export const signUp = async(req:Request,res:Response)=>{
     const user = await createUser(req.body)
@@ -8,6 +9,20 @@ export const signUp = async(req:Request,res:Response)=>{
         sendResponse(res,{message:"user not created"},400)
    return
     }
-    sendResponse(res,{message: "User created",data:user},201)
+    sendResponse(res,{message: "User registered successfully",data:user},201)
 } 
+export const logIn = async (req:Request,res:Response)=>{
+   const {email,password} =req.body
+    const user = await validateUser(email,password)
+    if (!user) {
+        sendResponse(res, { message: "invalid email or pass" }, 401)
+        return
+    }
+    const {accessToken} =signToken(user)
+    const result = {
+        token:accessToken,
+        user:user
+    }
+        return sendResponse(res, { message: 'User login successfully',data:result })
+}
 
