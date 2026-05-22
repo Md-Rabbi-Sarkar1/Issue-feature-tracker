@@ -1,10 +1,10 @@
-import {Pool} from "pg"
+import { Pool } from "pg"
 import config from "../config"
 export const pool = new Pool({
-    connectionString:config.connectionString
+    connectionString: config.connectionString
 })
-export const initDB = async()=>{
-await pool.query(`
+export const initDB = async () => {
+    await pool.query(`
     create table if not exists users (
     id serial primary key,
     name varchar(100) not null,
@@ -28,5 +28,5 @@ await pool.query(`
         updated_at timestamptz not null default now()
         )
         `)
-        console.log("Database connected")
+    console.log("Database connected")
 }

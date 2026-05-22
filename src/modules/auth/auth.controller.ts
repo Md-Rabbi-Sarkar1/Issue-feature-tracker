@@ -11,6 +11,7 @@ export const signUp = async (req: Request, res: Response) => {
     }
     sendResponse(res, { message: "User registered successfully", data: user }, 201)
 }
+
 export const logIn = async (req: Request, res: Response) => {
     const { email, password } = req.body
     const user = await validateUser(email, password)
@@ -28,6 +29,6 @@ export const logIn = async (req: Request, res: Response) => {
         token: accessToken,
         user: user
     }
-    return sendResponse(res, { message: 'User login successfully', data: result },201)
+    return sendResponse(res, { message: 'User login successfully', data: result }, 201)
 }
 

@@ -24,4 +24,4 @@ export type TIssue = {
     created_at: Date,
     updated_at: Date
 }
-export type UIssue = Omit<TIssue,"id"|"status"|"created_at"|"updated_at">
+export type UIssue = Omit<TIssue, "id" | "status" | "created_at" | "updated_at">
