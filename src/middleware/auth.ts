@@ -4,12 +4,13 @@ import { verifyToken } from "../utils/jwt";
 import { getUserById } from "../modules/auth/auth.service";
 import type { Role } from "../types";
 import { pool } from "../db";
+import { error } from "node:console";
 
 
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
    const token = req.headers.authorization
    if (!token) {
-      return sendResponse(res, { message: "token not found" }, 401)
+      return sendResponse(res, { message: "Token not found"}, 401)
    }
    const payload = verifyToken(token)
    if (!payload) {
@@ -26,7 +27,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
 export const authorizeRole = (...roles: Role[]) => {
    return (req: Request, res: Response, next: NextFunction) => {
       if (!req.user) {
-         return sendResponse(res, { message: "unothorize" }, 401)
+         return sendResponse(res, { message: "Unothorize" }, 401)
       }
       if (!roles.includes(req.user.role)) {
          return sendResponse(res, { message: "Have no permission" }, 403)
@@ -42,7 +43,7 @@ export const canUpdateIssue = async (req: Request, res: Response, next: NextFunc
       `, [issueId])
    const issue = resIssue.rows[0]
    if (!issue) {
-      return sendResponse(res, { message: "Issue not found" })
+      return sendResponse(res, { message: "Issue not found" },404)
    }
    const user = req.user
    if (user?.role === "maintainer") {
@@ -63,7 +64,7 @@ export const canDeleteIssue = async (req: Request, res: Response, next: NextFunc
       `, [issueId])
    const issue = resIssue.rows[0]
    if (!issue) {
-      return sendResponse(res, { message: "Issue not found" })
+      return sendResponse(res, { message: "Issue not found" },404)
    }
    const user = req.user
    if (user?.role === "maintainer") {
