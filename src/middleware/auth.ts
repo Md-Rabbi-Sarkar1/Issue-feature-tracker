@@ -10,7 +10,7 @@ import { error } from "node:console";
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
    const token = req.headers.authorization
    if (!token) {
-      return sendResponse(res, { message: "Token not found"}, 401)
+      return sendResponse(res, { message: "Unathorized access"}, 401)
    }
    const payload = verifyToken(token)
    if (!payload) {

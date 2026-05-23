@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 
 export const globalErrorHandler = (
     err: any,
@@ -7,18 +7,11 @@ export const globalErrorHandler = (
     next: NextFunction
 ) => {
 
-    const statusCode =
-        err.statusCode || 500;
-
-    const message =
-        err.message || "Something went wrong";
+    const statusCode = err.statusCode || 500;
 
     res.status(statusCode).json({
         success: false,
-        message,
-        error: {
-            statusCode,
-            details: err.details || null
-        }
+        message: err.message || "Something went wrong",
+        errors: err.details || err.message || null
     });
 };

@@ -91,7 +91,8 @@ function sendResponse(res, { message, data, error: error2 }, status = 200) {
   res.status(status).json({
     success: error2 ? false : true,
     message,
-    data: error2 ? void 0 : data
+    data: error2 ? void 0 : data,
+    error: error2 || void 0
   });
 }
 
@@ -112,7 +113,7 @@ var verifyToken = (token) => {
 var signUp = async (req, res) => {
   const user = await createUser(req.body);
   if (!user) {
-    sendResponse(res, { message: "User not created" }, 400);
+    sendResponse(res, { message: "User not create" }, 400);
     return;
   }
   sendResponse(res, { message: "User registered successfully", data: user }, 201);
@@ -134,7 +135,7 @@ var logIn = async (req, res) => {
     token: accessToken,
     user
   };
-  return sendResponse(res, { message: "User login successfully", data: result }, 201);
+  return sendResponse(res, { message: "Login successfull", data: result }, 200);
 };
 
 // src/modules/auth/auth.route.ts
@@ -223,7 +224,7 @@ var deleteIssueFromDB = async (id) => {
   const res = await pool.query(`
         delete from issues where id =$1
         `, [id]);
-  return res.rows[0];
+  return res;
 };
 
 // src/modules/issue/issue.controller.ts
@@ -239,7 +240,7 @@ var createIssue = async (req, res) => {
 var getAllIssues = async (req, res) => {
   const result = await getAllIssueFromDB(req.query);
   if (!result) {
-    return sendResponse(res, { message: "Issues rettrived unsuccessfull" }, 401);
+    return sendResponse(res, { message: "Issues not found" }, 401);
   }
   return sendResponse(res, { data: result }, 200);
 };
@@ -247,7 +248,7 @@ var getIssueById = async (req, res) => {
   const { id } = req.params;
   const result = await getIssueByIdFromDB(id);
   if (!result) {
-    return sendResponse(res, { message: "Issues rettrived unsuccessfull" }, 401);
+    return sendResponse(res, { message: "Issues not found" }, 401);
   }
   return sendResponse(res, { data: result }, 200);
 };
@@ -256,7 +257,7 @@ var updateIssue = async (req, res) => {
   const { title, description, type } = req.body;
   const result = await updateIssueToDB(req.body, id);
   if (!result) {
-    return sendResponse(res, { message: " Issue updated unsuccessfull" }, 401);
+    return sendResponse(res, { message: " Issue not found to update" }, 401);
   }
   return sendResponse(res, { message: "Issue updated successfully", data: result }, 200);
 };
@@ -264,9 +265,9 @@ var deleteIssue = async (req, res) => {
   const { id } = req.params;
   const result = await deleteIssueFromDB(id);
   if (!result) {
-    return sendResponse(res, { message: "Delete issue unsuccessfull" }, 401);
+    return sendResponse(res, { message: "Issue not found to delete" }, 401);
   }
-  return sendResponse(res, { message: "Delete issue successfull" }, 200);
+  return sendResponse(res, { message: "Delete issue successfully" }, 200);
 };
 
 // src/middleware/auth.ts
@@ -274,7 +275,7 @@ import "console";
 var auth = async (req, res, next) => {
   const token = req.headers.authorization;
   if (!token) {
-    return sendResponse(res, { message: "Token not found" }, 401);
+    return sendResponse(res, { message: "Unathorized access" }, 401);
   }
   const payload = verifyToken(token);
   if (!payload) {
@@ -346,21 +347,22 @@ var issueRoute = router2;
 // src/middleware/globalErrorHandler.ts
 var globalErrorHandler = (err, req, res, next) => {
   const statusCode = err.statusCode || 500;
-  const message = err.message || "Something went wrong";
   res.status(statusCode).json({
     success: false,
-    message,
-    error: {
-      statusCode,
-      details: err.details || null
-    }
+    message: err.message || "Something went wrong",
+    errors: err.details || err.message || null
   });
 };
 
 // src/app.ts
+import cors from "cors";
 var app = express();
 app.use(express.json());
 app.use(cookieParser());
+var allowedOrigins = ["http://localhost:3000", "https://itift-server.vercel.app/"];
+app.use(cors({
+  origin: allowedOrigins
+}));
 app.get("/", (req, res) => {
   res.send("Hello World");
 });

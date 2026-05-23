@@ -6,7 +6,7 @@ import { signToken } from "../../utils/jwt"
 export const signUp = async (req: Request, res: Response) => {
     const user = await createUser(req.body)
     if (!user) {
-        sendResponse(res, { message: "User not created" }, 400)
+        sendResponse(res, { message: "User not create" }, 400)
         return
     }
     sendResponse(res, { message: "User registered successfully", data: user }, 201)
@@ -29,6 +29,6 @@ export const logIn = async (req: Request, res: Response) => {
         token: accessToken,
         user: user
     }
-    return sendResponse(res, { message: 'User login successfully', data: result }, 201)
+    return sendResponse(res, { message: 'Login successfull', data: result }, 200)
 }
 

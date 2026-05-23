@@ -8,6 +8,7 @@ export function sendResponse<T>(
     res.status(status).json({
         success: error ? false : true,
         message: message,
-        data: error ? undefined : data
+        data: error ? undefined : data,
+        error:error || undefined
     })
 }

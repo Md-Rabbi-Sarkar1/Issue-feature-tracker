@@ -15,7 +15,7 @@ export const createIssue = async (req: Request, res: Response) => {
 export const getAllIssues = async (req: Request, res: Response) => {
     const result = await getAllIssueFromDB(req.query)
     if (!result) {
-        return sendResponse(res, { message: "Issues rettrived unsuccessfull" }, 401)
+        return sendResponse(res, { message: "Issues not found" }, 401)
     }
     return sendResponse(res, { data: result }, 200)
 }
@@ -24,7 +24,7 @@ export const getIssueById = async (req: Request, res: Response) => {
     const { id } = req.params
     const result = await getIssueByIdFromDB(id as string)
     if (!result) {
-        return sendResponse(res, { message: "Issues rettrived unsuccessfull" }, 401)
+        return sendResponse(res, { message: "Issues not found" }, 401)
     }
     return sendResponse(res, { data: result }, 200)
 }
@@ -34,7 +34,7 @@ export const updateIssue = async (req: Request, res: Response) => {
     const { title, description, type } = req.body
     const result = await updateIssueToDB(req.body, id as string)
     if (!result) {
-        return sendResponse(res, { message: " Issue updated unsuccessfull" }, 401)
+        return sendResponse(res, { message: " Issue not found to update" }, 401)
     }
     return sendResponse(res, { message: "Issue updated successfully", data: result }, 200)
 }
@@ -43,7 +43,7 @@ export const deleteIssue = async (req: Request, res: Response) => {
     const { id } = req.params
     const result = await deleteIssueFromDB(id as string)
     if (!result) {
-        return sendResponse(res, { message: "Delete issue unsuccessfull" }, 401)
+        return sendResponse(res, { message: "Issue not found to delete" }, 401)
     }
-    return sendResponse(res, { message: "Delete issue successfull" }, 200)
+    return sendResponse(res, { message: "Delete issue successfully" }, 200)
 }
